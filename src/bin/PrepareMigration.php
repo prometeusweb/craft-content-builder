@@ -2,9 +2,14 @@
 
 class PrepareMigration
 {
-	public $sourceFilePath = __DIR__ . '/../matrix/field-manager.json';
+	public $sourceFilePath;
 	private $sourceJson;
 	private $errors = [];
+
+	public function __construct($sourcePath)
+	{
+		$this->sourceFilePath = $sourcePath;
+	}
 
 	public function getSystemCheckError()
 	{

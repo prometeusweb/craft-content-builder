@@ -1,7 +1,7 @@
 <?php
 require __DIR__ . '/src/bin/PrepareMigration.php';
 
-$utility     = new PrepareMigration;
+$utility     = new PrepareMigration(__DIR__ . '/src/matrix/field-manager.json');
 $systemError = $utility->getSystemCheckError();
 $utility->generateMigration();
 
@@ -53,7 +53,14 @@ $utility->generateMigration();
 
                     <p class="text-sm mb-6"><strong>Select the blocks that you want to keep:</strong></p>
 
-                    <a onclick="toggleCheckboxes()">Select all</a>
+                    <p class="mb-4">
+                        <button type="button" onclick="checkCheckboxes()" class="bg-transparent hover:bg-blue text-blue-dark font-semibold hover:text-white p-1 border border-blue hover:border-transparent rounded">
+                            Select all
+                        </button>
+                        <button type="button" onclick="uncheckCheckboxes()" class="bg-transparent hover:bg-blue text-blue-dark font-semibold hover:text-white p-1 border border-blue hover:border-transparent rounded">
+                            Deselect all
+                        </button>
+                    </p>
 
                     <?php foreach($utility->getBlockList() as $item): ?>
                     <div class="md:flex md:items-center mb-2">
@@ -81,18 +88,21 @@ $utility->generateMigration();
                 </p>
             </div>
             <?php endif; ?>
-			<!--<p class="mt-6 text-xs text-grey-dark">
-				Followed by <a class="text-blue no-underline" href="#">Google</a> and <a class="text-blue no-underline" href="5 others">5 others</a>
-			</p>-->
 		</div>
 	</div>
 </div>
 
 <script>
-    function toggleCheckboxes(source) {
+    function checkCheckboxes(source) {
         checkboxes = document.getElementsByClassName('checkbox');
         for(var i=0, n=checkboxes.length;i<n;i++) {
-            checkboxes[i].setAttribute('checked') = 'checked';
+            checkboxes[i].checked = true;
+        }
+    }
+    function uncheckCheckboxes(source) {
+        checkboxes = document.getElementsByClassName('checkbox');
+        for(var i=0, n=checkboxes.length;i<n;i++) {
+            checkboxes[i].checked = false;
         }
     }
 </script>
