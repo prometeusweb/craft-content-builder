@@ -52,11 +52,14 @@ $utility->generateMigration();
                     </div>
 
                     <p class="text-sm mb-6"><strong>Select the blocks that you want to keep:</strong></p>
+
+                    <a onclick="toggleCheckboxes()">Select all</a>
+
                     <?php foreach($utility->getBlockList() as $item): ?>
                     <div class="md:flex md:items-center mb-2">
                         <div class="ml-2 "></div>
                         <label class="block">
-                            <input class="mr-2 leading-tight" type="checkbox"  name="<?php echo $item['key'] ?>" value="1" <?php if($utility->isCheckboxChecked($item['key'])) echo 'checked="checked"' ?>>
+                            <input class="mr-2 leading-tight checkbox" type="checkbox" name="<?php echo $item['key'] ?>" value="1" <?php if($utility->isCheckboxChecked($item['key'])) echo 'checked="checked"' ?>>
                             <span class="text-sm"><?php echo $item['name'] ?></span>
                         </label>
                     </div>
@@ -84,5 +87,14 @@ $utility->generateMigration();
 		</div>
 	</div>
 </div>
+
+<script>
+    function toggleCheckboxes(source) {
+        checkboxes = document.getElementsByClassName('checkbox');
+        for(var i=0, n=checkboxes.length;i<n;i++) {
+            checkboxes[i].setAttribute('checked') = 'checked';
+        }
+    }
+</script>
 </body>
 </html>
