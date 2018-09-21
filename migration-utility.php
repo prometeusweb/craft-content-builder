@@ -1,9 +1,13 @@
 <?php
-require __DIR__ . '/src/bin/PrepareMigration.php';
+require __DIR__ . '/lib/PrepareMigration.php';
 
 $utility     = new PrepareMigration(__DIR__ . '/src/matrix/field-manager.json');
+
 $systemError = $utility->getSystemCheckError();
-$utility->generateMigration();
+
+if($utility->isFormSubmitted()) {
+	$utility->generateMigration();
+}
 
 ?>
 <!doctype html>
@@ -33,25 +37,32 @@ $utility->generateMigration();
             <?php
                 $notifications = $utility->getErrors();
                 if(count($notifications)){
-                    ?><div class="px-2 mb-3"><?php
+                    ?><div class="px-2 mb-3"><ul><?php
                     foreach($notifications as $notification){
-                        ?><p class="text-red text-bold"><?php echo $notification ?></p><?php
+                        ?><li class="text-red text-bold"><?php echo $notification ?></li><?php
                     }
-                    ?></div><?php
+                    ?></ul></div><?php
                 }
             ?>
 
             <div>
                 <form class="w-full max-w-xs" action="" method="post">
 
-                    <p class="text-sm mb-2"><strong>Insert the name of the destination matrix:</strong></p>
-                    <div class="flex flex-wrap -mx-3 mb-2">
+                    <label class="text-sm" for="matrixName"><strong>Insert the name of the destination matrix:</strong></label>
+                    <div class="flex flex-wrap -mx-3 mb-2 mt-2">
                         <div class="w-full px-3">
-                            <input class="block w-full bg-grey-lighter text-grey-darker border <?php echo $matrixNameError ? 'border-red' : 'border-grey-lighter' ?> rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-grey" type="text" name="matrixName" value="<?php echo $_POST['matrixName'] ?? '' ?>">
+                            <input class="block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-grey" type="text" id="matrixName" name="matrixName" value="<?php echo $_POST['matrixName'] ?? '' ?>">
                         </div>
                     </div>
 
-                    <p class="text-sm mb-6"><strong>Select the blocks that you want to keep:</strong></p>
+                    <label class="text-sm" for="matrixHandle"><strong>Insert the handle:</strong></label>
+                    <div class="flex flex-wrap -mx-3 mb-2 mt-2">
+                        <div class="w-full px-3">
+                            <input class="block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-grey" type="text" id="matrixHandle" name="matrixHandle" value="<?php echo $_POST['matrixHandle'] ?? '' ?>">
+                        </div>
+                    </div>
+
+                    <p class="text-sm mb-4"><strong>Select the blocks that you want to keep:</strong></p>
 
                     <p class="mb-4">
                         <button type="button" onclick="checkCheckboxes()" class="bg-transparent hover:bg-blue text-blue-dark font-semibold hover:text-white p-1 border border-blue hover:border-transparent rounded">
@@ -79,6 +90,8 @@ $utility->generateMigration();
                             </button>
                         </div>
                     </div>
+
+                    <input type="hidden" name="submitted" value="true">
                 </form>
             </div>
             <?php else: ?>

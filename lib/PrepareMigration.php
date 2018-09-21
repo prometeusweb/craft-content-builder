@@ -74,16 +74,40 @@ class PrepareMigration
 		$this->errors[] = $error;
 	}
 
-	public function generateMigration()
+	private function postDataIsValid()
 	{
-		if(isset($_POST) && count($_POST)) {
-			if(isset($_POST['matrixName']) && $_POST['matrixName'] == ''){
+		$isValid = true;
+
+		if($this->isFormSubmitted())
+		{
+			if (isset($_POST['matrixName']) && $_POST['matrixName'] == '')
+			{
 				$this->addError("Please insert a valid name for the destination matrix");
-				return;
+
+				$isValid = false;
 			}
 
+			if (isset($_POST['matrixHandle']) && $_POST['matrixHandle'] == '')
+			{
+				$this->addError("Please insert a valid handle");
+
+				$isValid = false;
+			}
+		}
+
+		return $isValid;
+	}
+
+	public function isFormSubmitted()
+	{
+		return (isset($_POST['submitted']) && $_POST['submitted'] === "true");
+	}
+
+	public function generateMigration()
+	{
+		if($this->postDataIsValid()){
 			$matrixName = $_POST['matrixName'];
-			$matrixHandle = $this->slugify($_POST['matrixName']);
+			$matrixHandle = $_POST['matrixHandle'];
 
 			$jsonMaster = $this->sourceJson;
 
@@ -106,8 +130,9 @@ class PrepareMigration
 				return;
 			}
 
-			$this->generateDestinationFileMigration($jsonMaster, $matrixHandle);
+			$this->generateDestinationFileMigration($jsonMaster, $this->slugify($matrixName));
 		}
+
 	}
 
 	private function generateDestinationFileMigration($json, $fileName)
@@ -150,64 +175,4 @@ class PrepareMigration
 		return $text;
 	}
 	
-	public function aa()
-	{
-
-var_dump(count($argv));
-
-if(count($argv) <= 2){
-	echo "\nError: the name of the source json file or the name of the block to keep is missing from command.\n";
-	echo "\nExample: prepare-single-block-matrix.php jsonfilenamepath.json \"Text and image\"";
-	echo "\nYou can require multiple blocks like that:";
-	echo "\nprepare-single-block-matrix.php jsonfilenamepath.json \"Text and image\" \"Iframe\" \"Quote\"";
-	die();
-}
-
-if(is_file($argv[1])){
-	$sourceJson = json_decode(file_get_contents($argv[1]), true);
-}
-else {
-	echo "\nError: the file {$argv[1]} does not exist";
-	die();
-}
-
-if(isset($sourceJson[0]['settings']['blockTypes']) === false){
-	echo "\nError: The array containing the blockTypes is missing from the migration origin file";
-	die;
-}
-
-$blocksToKeep = $argv;
-
-// Keep only the arguments that specify the blocks to keep, remove everything else
-array_splice($arguments, 0, 2);
-
-$keysToKeep = [];
-
-foreach($sourceJson[0]['settings']['blockTypes'] as $key => $item) {
-	if(in_array($item['name'], $blocksToKeep)){
-		unset($json[0]['settings']['blockTypes'][$key]);
-	}
-}
-
-$jsone = preg_replace_callback ('/^ +/m', function ($m) {
-	return str_repeat (' ', strlen ($m[0]) / 2);
-}, json_encode ($json, JSON_PRETTY_PRINT));
-file_put_contents($compiled, $jsone);
-
-
-
-/*// compare two files line by line
-$diff = Diff::compareFiles($source, $compiled);
-echo '<h1>First diff:</h1>';
-var_dump($diff);
-
-echo '<h1>Second diff:</h1>';
-// compare two files character by character
-$diff = Diff::compareFiles($source, $compiled, true);*/
-
-
-
-//echo '<pre>';var_dump($json[0]['settings']['blockTypes']);echo '</pre>';
-//var_dump($json->settings->blockTypes->new2);
-	}
 }
