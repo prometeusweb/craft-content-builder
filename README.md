@@ -1,5 +1,5 @@
 # Craft Content Builder
-A repository for my personal content builders
+A repository for my personal content builder for Craft Cms
 
 ## Rules
 - the matrix master object name should contain the current version. Eg: `Master Matrix - v1.2`
