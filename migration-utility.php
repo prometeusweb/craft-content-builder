@@ -108,13 +108,13 @@ if($utility->isFormSubmitted()) {
 <script>
     function checkCheckboxes(source) {
         checkboxes = document.getElementsByClassName('checkbox');
-        for(var i=0, n=checkboxes.length;i<n;i++) {
+        for(let i=0, n=checkboxes.length;i<n;i++) {
             checkboxes[i].checked = true;
         }
     }
     function uncheckCheckboxes(source) {
         checkboxes = document.getElementsByClassName('checkbox');
-        for(var i=0, n=checkboxes.length;i<n;i++) {
+        for(let i=0, n=checkboxes.length;i<n;i++) {
             checkboxes[i].checked = false;
         }
     }
